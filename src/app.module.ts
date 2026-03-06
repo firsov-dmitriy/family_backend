@@ -10,7 +10,8 @@ import { typeOrmConfig } from './config/typeorm.config';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
+      envFilePath:
+        process.env.NODE_ENV === 'production' ? ['.env.production', '.env'] : ['.env'],
     }),
     TypeOrmModule.forRootAsync(typeOrmConfig),
   ],
