@@ -6,7 +6,7 @@ export const typeOrmConfig: TypeOrmModuleAsyncOptions = {
   useFactory: (configService: ConfigService) => ({
     type: 'postgres' as const,
     url: configService.getOrThrow<string>('DATABASE_URL'),
-    synchronize: configService.get<string>('POSTGRES_SYNCHRONIZE', 'true') === 'true',
+    synchronize: configService.get<string>('POSTGRES_SYNCHRONIZE', 'false') === 'true',
     logging: configService.get<string>('POSTGRES_LOGGING', 'false') === 'true',
     autoLoadEntities: true,
   }),

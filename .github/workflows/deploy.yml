@@ -18,7 +18,9 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             cd /var/www/family_backend
-            git pull
-            npm install
-            npm run build
-            pm2 restart backend
+            git restore yarn.lock
+            git pull --ff-only
+            yarn install --frozen-lockfile
+            yarn build
+            yarn migration:run:prod
+            pm2 restart backend --update-env

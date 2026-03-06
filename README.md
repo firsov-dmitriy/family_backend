@@ -28,6 +28,8 @@ DATABASE_URL=postgres://app_user:password@localhost:5432/app_db
 
 For production, also use `.env` on server and set real credentials there.
 
+Database schema is managed by TypeORM migrations (`POSTGRES_SYNCHRONIZE=false`).
+
 ## Run
 
 ```bash
@@ -54,4 +56,11 @@ GET    /api/wishlists
 GET    /api/wishlists/:id
 PATCH  /api/wishlists/:id
 DELETE /api/wishlists/:id
+```
+
+Migrations:
+
+```bash
+yarn migration:run
+yarn migration:revert
 ```
