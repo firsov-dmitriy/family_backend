@@ -26,15 +26,7 @@ cp .env.example .env
 DATABASE_URL=postgres://app_user:password@localhost:5432/app_db
 ```
 
-## Production env
-
-Use a separate file on server:
-
-```bash
-cp .env.production.example .env.production
-```
-
-Then set real production credentials in `.env.production` (especially `DATABASE_URL`).
+For production, also use `.env` on server and set real credentials there.
 
 ## Run
 
