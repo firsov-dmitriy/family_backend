@@ -37,21 +37,21 @@ yarn start:dev
 Health endpoint:
 
 ```bash
-GET http://localhost:3000/health
+GET http://localhost:3000/api/health
 ```
 
 Swagger:
 
 ```bash
-http://localhost:3000/docs
+http://localhost:3000/api/docs
 ```
 
 Wishlist routes:
 
 ```bash
-POST   /wishlists
-GET    /wishlists
-GET    /wishlists/:id
-PATCH  /wishlists/:id
-DELETE /wishlists/:id
+POST   /api/wishlists
+GET    /api/wishlists
+GET    /api/wishlists/:id
+PATCH  /api/wishlists/:id
+DELETE /api/wishlists/:id
 ```

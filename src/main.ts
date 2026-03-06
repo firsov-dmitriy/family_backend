@@ -16,6 +16,7 @@ async function bootstrap(): Promise<void> {
       forbidNonWhitelisted: true,
     }),
   );
+  app.setGlobalPrefix('api');
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Family Backend API')
@@ -23,7 +24,7 @@ async function bootstrap(): Promise<void> {
     .setVersion('1.0.0')
     .build();
   const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('docs', app, swaggerDocument);
+  SwaggerModule.setup('docs', app, swaggerDocument, { useGlobalPrefix: true });
 
   const port = configService.get<number>('PORT', 3000);
   await app.listen(port);
