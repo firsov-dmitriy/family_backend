@@ -39,3 +39,19 @@ Health endpoint:
 ```bash
 GET http://localhost:3000/health
 ```
+
+Swagger:
+
+```bash
+http://localhost:3000/docs
+```
+
+Wishlist routes:
+
+```bash
+POST   /wishlists
+GET    /wishlists
+GET    /wishlists/:id
+PATCH  /wishlists/:id
+DELETE /wishlists/:id
+```
