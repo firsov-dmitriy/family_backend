@@ -1,0 +1,10 @@
+node_modules
+dist
+coverage
+.env
+.npm-cache
+
+# IDE
+.idea
+.vscode
+.DS_Store
