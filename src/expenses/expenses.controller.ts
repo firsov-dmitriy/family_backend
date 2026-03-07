@@ -13,9 +13,11 @@ import {
 } from '@nestjs/common';
 import { ApiCreatedResponse, ApiNoContentResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
+import { CategorySummaryResponseDto } from './dto/category-summary-response.dto';
 import { CreateExpenseDto } from './dto/create-expense.dto';
 import { MonthSummaryQueryDto } from './dto/month-summary-query.dto';
 import { MonthSummaryResponseDto } from './dto/month-summary-response.dto';
+import { SetCategoryLimitDto } from './dto/set-category-limit.dto';
 import { SetMonthLimitDto } from './dto/set-month-limit.dto';
 import { UpdateExpenseDto } from './dto/update-expense.dto';
 import { Expense } from './entities/expense.entity';
@@ -48,6 +50,20 @@ export class ExpensesController {
   @ApiOkResponse({ type: MonthSummaryResponseDto })
   setMonthLimit(@Body() dto: SetMonthLimitDto): Promise<MonthSummaryResponseDto> {
     return this.expensesService.setMonthLimit(dto);
+  }
+
+  @Get('categories-summary')
+  @ApiOkResponse({ type: [CategorySummaryResponseDto] })
+  getCategoriesSummary(
+    @Query() query: MonthSummaryQueryDto,
+  ): Promise<CategorySummaryResponseDto[]> {
+    return this.expensesService.getCategoriesSummary(query.month);
+  }
+
+  @Patch('category-limit')
+  @ApiOkResponse({ type: CategorySummaryResponseDto })
+  setCategoryLimit(@Body() dto: SetCategoryLimitDto): Promise<CategorySummaryResponseDto> {
+    return this.expensesService.setCategoryLimit(dto);
   }
 
   @Get(':id')

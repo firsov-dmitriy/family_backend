@@ -78,6 +78,8 @@ PATCH  /api/expenses/:id
 DELETE /api/expenses/:id
 GET    /api/expenses/month-summary?month=3
 PATCH  /api/expenses/month-limit
+GET    /api/expenses/categories-summary?month=3
+PATCH  /api/expenses/category-limit
 ```
 
 Migrations:

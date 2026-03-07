@@ -3,9 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { ExpenseCategory } from '../expense-categories/entities/expense-category.entity';
+import { CategorySummaryResponseDto } from './dto/category-summary-response.dto';
 import { CreateExpenseDto } from './dto/create-expense.dto';
 import { MonthSummaryResponseDto } from './dto/month-summary-response.dto';
+import { SetCategoryLimitDto } from './dto/set-category-limit.dto';
 import { SetMonthLimitDto } from './dto/set-month-limit.dto';
+import { CategoryMonthlyLimit } from './entities/category-monthly-limit.entity';
 import { UpdateExpenseDto } from './dto/update-expense.dto';
 import { Expense } from './entities/expense.entity';
 import { MonthlyLimit } from './entities/monthly-limit.entity';
@@ -19,6 +22,8 @@ export class ExpensesService {
     private readonly expenseCategoriesRepository: Repository<ExpenseCategory>,
     @InjectRepository(MonthlyLimit)
     private readonly monthlyLimitsRepository: Repository<MonthlyLimit>,
+    @InjectRepository(CategoryMonthlyLimit)
+    private readonly categoryMonthlyLimitsRepository: Repository<CategoryMonthlyLimit>,
   ) {}
 
   async create(createDto: CreateExpenseDto): Promise<Expense> {
@@ -107,6 +112,69 @@ export class ExpensesService {
     }
 
     return this.getMonthSummary(dto.month);
+  }
+
+  async getCategoriesSummary(month: number): Promise<CategorySummaryResponseDto[]> {
+    const rows = await this.expenseCategoriesRepository
+      .createQueryBuilder('category')
+      .leftJoin(
+        Expense,
+        'expense',
+        'expense.category_id = category.id AND expense.month = :month',
+        { month },
+      )
+      .leftJoin(
+        CategoryMonthlyLimit,
+        'category_limit',
+        'category_limit.category_id = category.id AND category_limit.month = :month',
+        { month },
+      )
+      .select('category.id', 'categoryId')
+      .addSelect('category.name', 'categoryName')
+      .addSelect('COALESCE(category_limit.limit, 0)', 'limit')
+      .addSelect('COALESCE(SUM(expense.amount), 0)', 'spent')
+      .groupBy('category.id')
+      .addGroupBy('category.name')
+      .addGroupBy('category_limit.limit')
+      .orderBy('category.name', 'ASC')
+      .getRawMany<{ categoryId: string; categoryName: string; limit: string; spent: string }>();
+
+    return rows.map((row) => {
+      const limit = Number(row.limit);
+      const spent = Number(row.spent);
+      return {
+        month,
+        categoryId: Number(row.categoryId),
+        categoryName: row.categoryName,
+        limit,
+        spent,
+        remaining: limit - spent,
+      };
+    });
+  }
+
+  async setCategoryLimit(dto: SetCategoryLimitDto): Promise<CategorySummaryResponseDto> {
+    await this.ensureCategoryExists(dto.categoryId);
+
+    const existingLimit = await this.categoryMonthlyLimitsRepository.findOne({
+      where: { month: dto.month, categoryId: dto.categoryId },
+    });
+
+    if (existingLimit) {
+      existingLimit.limit = dto.limit;
+      await this.categoryMonthlyLimitsRepository.save(existingLimit);
+    } else {
+      const newLimit = this.categoryMonthlyLimitsRepository.create(dto);
+      await this.categoryMonthlyLimitsRepository.save(newLimit);
+    }
+
+    const summaries = await this.getCategoriesSummary(dto.month);
+    const categorySummary = summaries.find((item) => item.categoryId === dto.categoryId);
+    if (!categorySummary) {
+      throw new NotFoundException(`Expense category with id=${dto.categoryId} not found`);
+    }
+
+    return categorySummary;
   }
 
   private async ensureCategoryExists(categoryId: number): Promise<void> {
