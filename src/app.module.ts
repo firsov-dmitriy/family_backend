@@ -5,6 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { typeOrmConfig } from './config/typeorm.config';
+import { ExpenseCategoriesModule } from './expense-categories/expense-categories.module';
+import { ExpensesModule } from './expenses/expenses.module';
 import { WishlistsModule } from './wishlists/wishlists.module';
 
 @Module({
@@ -14,6 +16,8 @@ import { WishlistsModule } from './wishlists/wishlists.module';
       envFilePath: '.env',
     }),
     TypeOrmModule.forRootAsync(typeOrmConfig),
+    ExpenseCategoriesModule,
+    ExpensesModule,
     WishlistsModule,
   ],
   controllers: [AppController],

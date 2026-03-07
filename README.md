@@ -58,6 +58,28 @@ PATCH  /api/wishlists/:id
 DELETE /api/wishlists/:id
 ```
 
+Expense categories routes:
+
+```bash
+POST   /api/expense-categories
+GET    /api/expense-categories
+GET    /api/expense-categories/:id
+PATCH  /api/expense-categories/:id
+DELETE /api/expense-categories/:id
+```
+
+Expenses routes:
+
+```bash
+POST   /api/expenses
+GET    /api/expenses
+GET    /api/expenses/:id
+PATCH  /api/expenses/:id
+DELETE /api/expenses/:id
+GET    /api/expenses/month-summary?month=3
+PATCH  /api/expenses/month-limit
+```
+
 Migrations:
 
 ```bash
