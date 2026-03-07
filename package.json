@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "NestJS backend with PostgreSQL",
   "private": true,
+  "packageManager": "yarn@1.22.22",
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",

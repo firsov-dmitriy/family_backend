@@ -20,6 +20,8 @@ jobs:
             cd /var/www/family_backend
             git restore yarn.lock
             git pull --ff-only
+            corepack enable
+            corepack prepare yarn@1.22.22 --activate
             yarn install --frozen-lockfile
             yarn build
             yarn migration:run:prod
